@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>✨ Три в ряд | Match-3 с анимацией и звуком</title>
+    <title>✨ Три в ряд | Match-3 игра</title>
     <style>
         * {
             user-select: none;
@@ -20,7 +20,7 @@
             align-items: center;
             font-family: 'Segoe UI', 'Poppins', 'Roboto', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
         }
 
         .game-container {
@@ -50,13 +50,15 @@
             touch-action: none;
         }
 
+        /* Горизонтальное расположение */
         .info {
             display: flex;
+            flex-direction: row;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
             margin: 20px 0 15px 0;
-            gap: 15px;
-            min-height: 70px;
+            width: 100%;
         }
 
         .score-box {
@@ -75,39 +77,14 @@
         .score-box span:first-child {
             font-size: 0.9rem;
             color: #f3c26b;
-            margin-right: 6px;
-        }
-
-        .status {
-            background: linear-gradient(135deg, #e9dbc0 0%, #dfcfad 100%);
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-weight: bold;
-            color: #3d2a1a;
-            font-size: 0.95rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: inset 0 1px 3px #aa8e64, 0 3px 6px rgba(0,0,0,0.1);
-            flex-shrink: 1;
-            min-width: 0;
-        }
-
-        .status span:first-child {
-            flex-shrink: 0;
-        }
-
-        .status span:last-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            margin-right: 8px;
         }
 
         .sound-toggle {
             background: linear-gradient(135deg, #2c1c12 0%, #3a2518 100%);
-            padding: 8px 16px;
+            padding: 8px 20px;
             border-radius: 40px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #ffd966;
             cursor: pointer;
             transition: 0.2s;
@@ -117,10 +94,11 @@
             font-weight: bold;
             box-shadow: 0 3px 8px rgba(0,0,0,0.2);
             border: 1px solid rgba(255, 217, 102, 0.3);
+            text-align: center;
         }
 
         .sound-toggle:active {
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
 
         .footer {
@@ -136,7 +114,7 @@
             border: none;
             font-size: 1rem;
             font-weight: bold;
-            padding: 8px 24px;
+            padding: 10px 28px;
             border-radius: 40px;
             color: #2d1b0e;
             cursor: pointer;
@@ -146,6 +124,7 @@
             transform: translateY(-1px);
             touch-action: manipulation;
             flex: 0 0 auto;
+            white-space: nowrap;
         }
 
         button:active {
@@ -153,7 +132,8 @@
             box-shadow: 0 1px 0 #a45d2a;
         }
 
-        @media (max-width: 600px) {
+        /* Адаптация для маленьких экранов */
+        @media (max-width: 550px) {
             body {
                 padding: 12px;
             }
@@ -169,26 +149,20 @@
             .info {
                 gap: 10px;
                 margin: 15px 0 12px 0;
-                min-height: 60px;
             }
             
             .score-box {
-                padding: 6px 14px;
-                font-size: 1.3rem;
+                padding: 6px 16px;
+                font-size: 1.4rem;
             }
             
             .score-box span:first-child {
-                font-size: 0.75rem;
-            }
-            
-            .status {
-                padding: 6px 12px;
-                font-size: 0.85rem;
+                font-size: 0.8rem;
             }
             
             .sound-toggle {
-                padding: 6px 12px;
-                font-size: 0.8rem;
+                padding: 6px 16px;
+                font-size: 0.9rem;
             }
             
             .footer {
@@ -197,34 +171,29 @@
             }
             
             button {
-                padding: 7px 18px;
+                padding: 8px 20px;
                 font-size: 0.9rem;
             }
         }
 
-        @media (max-width: 480px) {
-            .info {
-                gap: 8px;
-            }
-            
+        @media (max-width: 450px) {
             .score-box {
-                padding: 5px 10px;
-                font-size: 1.1rem;
+                padding: 5px 12px;
+                font-size: 1.2rem;
             }
             
-            .status {
-                padding: 5px 10px;
-                font-size: 0.75rem;
-            }
-            
-            .sound-toggle {
-                padding: 5px 10px;
+            .score-box span:first-child {
                 font-size: 0.7rem;
             }
             
-            button {
-                padding: 6px 14px;
+            .sound-toggle {
+                padding: 5px 12px;
                 font-size: 0.8rem;
+            }
+            
+            button {
+                padding: 6px 16px;
+                font-size: 0.85rem;
             }
         }
 
@@ -249,9 +218,6 @@
         <div class="info">
             <div class="score-box">
                 <span>🍬 ОЧКИ</span> <span id="scoreValue">0</span>
-            </div>
-            <div class="status">
-                <span>🎮</span> <span id="statusMessage">ваш ход</span>
             </div>
             <div class="sound-toggle" id="soundToggle">🔊 ЗВУК ВКЛ</div>
         </div>
@@ -283,10 +249,9 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const scoreSpan = document.getElementById('scoreValue');
-    const statusSpan = document.getElementById('statusMessage');
     const soundToggle = document.getElementById('soundToggle');
     
-    // Цвета для сладостей
+    // Цвета и эмодзи
     const colors = ['#E76F51', '#F4A261', '#E9C46A', '#6A994E', '#A7C7E7'];
     const emojis = ['🍎', '🍊', '🍋', '🍏', '🫐'];
     
@@ -681,11 +646,9 @@
         }
         
         isProcessing = false;
-        statusSpan.innerText = 'ваш ход';
         drawBoard();
         
         if (!isAnyMovePossible()) {
-            statusSpan.innerText = '♻️ перемешиваю...';
             await delay(300);
             shuffleBoardSmart();
             drawBoard();
@@ -749,20 +712,13 @@
     }
     
     async function trySwap(r1, c1, r2, c2) {
-        if (isProcessing) {
-            statusSpan.innerText = 'подождите...';
-            return false;
-        }
+        if (isProcessing) return false;
         
         const isAdjacent = Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1;
         if (!isAdjacent) return false;
         
         if (!wouldMatchAfterSwap(r1, c1, r2, c2)) {
             sounds.playError();
-            statusSpan.innerText = '❌ нет совпадений';
-            setTimeout(() => {
-                if (!isProcessing) statusSpan.innerText = 'ваш ход';
-            }, 600);
             return false;
         }
         
@@ -795,7 +751,6 @@
             }
         }
         
-        statusSpan.innerText = '😵 нет ходов!';
         await delay(500);
         shuffleBoardSmart();
         drawBoard();
@@ -818,11 +773,6 @@
             drawBoard();
             await delay(150);
         }
-        
-        statusSpan.innerText = '👉 попробуй обменять!';
-        setTimeout(() => {
-            if (!isProcessing) statusSpan.innerText = 'ваш ход';
-        }, 1500);
     }
     
     async function resetGame() {
@@ -839,11 +789,6 @@
         
         await settleBoardAndEarn();
         isProcessing = false;
-        
-        statusSpan.innerText = 'новая игра!';
-        setTimeout(() => {
-            if (!isProcessing) statusSpan.innerText = 'ваш ход';
-        }, 1000);
     }
     
     function delay(ms) {
@@ -895,7 +840,6 @@
             selectedRow = row;
             selectedCol = col;
             drawBoard();
-            statusSpan.innerText = 'выбери соседнюю';
         } else {
             trySwap(selectedRow, selectedCol, row, col);
             selectedRow = -1;
